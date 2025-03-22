@@ -28,7 +28,7 @@ export default function Footer() {
               variant="ghost"
               className="p-2 h-auto text-gray-300"
               onClick={() =>
-                window.open("https://twitter.com/GoatFi", "_blank")
+                window.open("https://twitter.com/goatfidao", "_blank")
               }
             >
               <Image
