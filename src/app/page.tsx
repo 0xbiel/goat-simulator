@@ -42,16 +42,16 @@ export default function Home() {
       <div className="w-full max-w-[90%] md:max-w-[90%] mx-auto">
         <Navbar />
         {direction === "vertical" ? (
-          // Mobile view with fixed heights and single scroll
-          <div className="space-y-4">
-            <div className="h-[70vh]">
+          // Mobile view with adaptive layout
+          <div className="space-y-8">
+            <div className="min-h-fit pb-4">
               <h2 className="text-xl font-semibold mb-4">
                 Investment Parameters
               </h2>
               <Separator className="my-4" />
               <InvestmentForm onCalculate={setSimulationResults} />
             </div>
-            <div className="h-[90vh]">
+            <div className="min-h-fit">
               <h2 className="text-xl font-semibold mb-4">Projection Results</h2>
               <Separator className="my-4" />
               <InvestmentChart results={simulationResults} />
