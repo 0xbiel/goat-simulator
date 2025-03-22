@@ -462,6 +462,23 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
                 </Select>
               </div>
             </div>
+
+            {/* Vault Opening Button */}
+            {formData.networkId && formData.vaultId && (
+              <div className="mt-6">
+                <Button
+                  variant="default"
+                  className="w-full"
+                  onClick={() => {
+                    const networkName = networkInfo[formData.networkId]?.name || formData.networkId;
+                    const url = `https://app.goat.fi/vault/${networkName.toLowerCase()}/${formData.vaultId.toLowerCase()}`;
+                    window.open(url, '_blank');
+                  }}
+                >
+                  Open Vault on Goat.fi
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </CardContent>
