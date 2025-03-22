@@ -1,5 +1,3 @@
-import { ImageResponse } from 'next/og';
-
 export const runtime = 'edge';
 
 export async function GET() {
@@ -22,7 +20,7 @@ export async function GET() {
     } else {
       return new Response('Failed to fetch image', { status: 500 });
     }
-  } catch (error) {
+  } catch (error) {//eslint-disable-line @typescript-eslint/no-unused-vars
     return new Response('Error serving image', { status: 500 });
   }
 }
