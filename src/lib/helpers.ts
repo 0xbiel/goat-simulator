@@ -1,4 +1,4 @@
-import { NetworkInfo, VaultInfo, SimulationResult, FormData } from "./types";
+import { NetworkInfo, VaultInfo, SimulationResult, FormData, CompetitorInfo } from "./types";
 
 // Network metadata
 export const networkInfo: Record<string, NetworkInfo> = {
@@ -9,6 +9,10 @@ export const networkInfo: Record<string, NetworkInfo> = {
   "42161": {
     name: "Arbitrum",
     image: "/networks/arbitrum.svg",
+  },
+  "1": {
+    name: "Ethereum",
+    image: "/networks/ethereum.svg",
   },
 };
 
@@ -58,20 +62,73 @@ export const vaultInfo: Record<string, VaultInfo> = {
   },
 };
 
+// Competitor metadata
+export const competitorInfo: Record<string, CompetitorInfo> = {
+  "aave-usdc-arbitrum": {
+    id: "aave-usdc-arbitrum",
+    name: "AAVE USDC",
+    image: "/assets/aave.svg",
+    poolId: "d9fa8e14-0447-4207-9ae8-7810199dfa1f",
+    assetType: "USDC",
+    isUSD: true,
+    networkId: "42161" // Arbitrum
+  },
+  "aave-eth-arbitrum": {
+    id: "aave-eth-arbitrum",
+    name: "AAVE ETH",
+    image: "/assets/aave.svg",
+    poolId: "e302de4d-952e-4e18-9749-0a9dc86e98bc", // This is a placeholder, use the correct pool ID
+    assetType: "WETH",
+    isUSD: false,
+    networkId: "42161" // Arbitrum
+  },
+  "aave-usdt-arbitrum": {
+    id: "aave-usdt-arbitrum",
+    name: "AAVE USD₮0",
+    image: "/assets/aave.svg",
+    poolId: "3a6cc030-738d-4e19-8a40-e63e9c4d5a6f", // This is a placeholder, use the correct pool ID
+    assetType: "USDT",
+    isUSD: true,
+    networkId: "42161" // Arbitrum
+  },
+  "scrvusd": {
+    id: "scrvusd",
+    name: "SCRVUSD",
+    image: "/assets/scrvusd.png",
+    poolId: "5fd328af-4203-471b-bd16-1705c726d926", // This is a placeholder, use the correct pool ID
+    assetType: "crvUSD",
+    isUSD: true,
+    networkId: "1" // ETH Mainnet
+  }
+};
+
+// Map vault types to their relevant competitors
+export const vaultCompetitors: Record<string, string[]> = {
+  // USDC vaults and their competitors
+  "ycUSDC": ["aave-usdc-arbitrum"],
+  "ycUSDCe": ["aave-usdc-arbitrum"],
+  "ycsUSDC": ["aave-usdc-arbitrum"],
+  
+
+  "ycUSDT": ["aave-usdt-arbitrum"],
+
+  // ETH vaults and their competitors
+  "ycETH": ["aave-eth-arbitrum"],
+
+  // crvUSD vaults and their competitors
+  "ycCRVUSD": ["scrvusd"],
+};
+
 // Chart colors
-export const chartColors = [
-  "#8985D8",
-  "#8985D8",
-  "#8985D8",
-  "#8985D8",
-  "#8985D8",
-];
+export const chartColor = "#8985D8";
+export const competitorColor = "#D7BBFA";
 
 // Calculate investment growth over time
 export function calculateInvestmentGrowth(
   formData: FormData,
   apy: number,
   updateAsset?: string,
+  competitor?: boolean,
 ): SimulationResult | null {
   // Return null for zero APY vaults
   if (apy === 0) {
@@ -168,9 +225,6 @@ export function calculateInvestmentGrowth(
   const profit = finalValue - totalInvested;
   const percentageReturn = (profit / totalInvested) * 100;
 
-  // Create color index based on vaultId to keep colors consistent
-  const colorIndex = vaultId.charCodeAt(0) % chartColors.length;
-
   return {
     vaultId,
     networkId,
@@ -181,7 +235,7 @@ export function calculateInvestmentGrowth(
     initialAmount,
     monthlyContribution,
     asset: updateAsset || vaultInfo[vaultId]?.assetType,
-    color: chartColors[colorIndex],
+    color: competitor ? competitorColor : chartColor,
     timeFrameValue,
     timeFrameUnit,
     returns: {

@@ -1,16 +1,19 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import { fetchApyData, fetchPriceData } from "@/lib/api";
+import { fetchApyData, fetchPriceData, fetchCompetitorAPY } from "@/lib/api";
 import {
   networkInfo,
   vaultInfo,
+  competitorInfo,
+  vaultCompetitors,
   calculateInvestmentGrowth,
 } from "@/lib/helpers";
 import { ApiResponse, SimulationResult, FormData } from "@/lib/types";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -20,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import Image from "next/image";
-import { Loader2 } from "lucide-react";
+import { Loader2, BarChart2 } from "lucide-react";
 
 interface InvestmentFormProps {
   onCalculate: (results: SimulationResult[]) => void;
@@ -33,6 +36,12 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
 
   const [formData, setFormData] = useState<FormData | null>(null);
   const dataFetchedRef = useRef(false);
+  
+  // New state for competitor features
+  const [showCompetitors, setShowCompetitors] = useState(false);
+  const [competitorAPY, setCompetitorAPY] = useState<Record<string, number>>({});
+  const [selectedCompetitor, setSelectedCompetitor] = useState<string | null>(null);
+  const [loadingCompetitor, setLoadingCompetitor] = useState(false);
 
   // Initialize form data on client-side only
   useEffect(() => {
@@ -95,31 +104,111 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
         networkId: value as string,
         vaultId: firstVaultId,
       }));
+      
+      // Reset competitor selection when network changes
+      if (showCompetitors) {
+        setSelectedCompetitor(null);
+      }
+    }
+    
+    // If vault changes, check if the selected competitor is available for this vault
+    if (name === "vaultId") {
+      const newVaultId = value as string;
+      const newAvailableCompetitors = vaultCompetitors[newVaultId] || [];
+      
+      // If there's a selected competitor that's not available for the new vault, reset it
+      if (selectedCompetitor && !newAvailableCompetitors.includes(selectedCompetitor)) {
+        setSelectedCompetitor(null);
+      }
     }
   };
 
-  // Auto-calculate whenever form data changes
+  // Function to toggle competitor visibility
+  const toggleCompetitors = () => {
+    // Reset competitor selection when hiding
+    if (showCompetitors) {
+      setSelectedCompetitor(null);
+    }
+    setShowCompetitors(!showCompetitors);
+  };
+
+  // Function to load competitor APY data
+  const loadCompetitorData = async (competitorId: string) => {
+    if (competitorAPY[competitorId] !== undefined) {
+      return; // Already loaded
+    }
+
+    setLoadingCompetitor(true);
+    try {
+      const poolId = competitorInfo[competitorId].poolId;
+      const apy = await fetchCompetitorAPY(poolId);
+      setCompetitorAPY(prev => ({ ...prev, [competitorId]: apy }));
+    } catch (error) {
+      console.error("Error loading competitor data:", error);
+    } finally {
+      setLoadingCompetitor(false);
+    }
+  };
+
+  // Function to select a competitor
+  const handleCompetitorSelect = (competitorId: string | null) => {
+    // Convert "none" string back to null for internal processing
+    const actualCompetitorId = competitorId === "none" ? null : competitorId;
+    setSelectedCompetitor(actualCompetitorId);
+    
+    // Load data if a competitor is selected and data isn't already loaded
+    if (actualCompetitorId && competitorAPY[actualCompetitorId] === undefined) {
+      loadCompetitorData(actualCompetitorId);
+    }
+  };
+
+  // Auto-calculate whenever form data or competitor selection changes
   useEffect(() => {
     if (!apyData || !formData?.networkId || !formData?.vaultId) return;
 
+    const results: SimulationResult[] = [];
+    
+    // Calculate for main vault
     const apy = Number(apyData.data[formData.networkId][formData.vaultId]);
-
-    let result;
-
+    
+    let mainResult;
     if (formData.useUSD && !vaultInfo[formData.vaultId]?.isUSD) {
-      // If using USD and vault is also USD, set initial amount to 0
-
-      result = calculateInvestmentGrowth(formData, apy, "USD");
+      mainResult = calculateInvestmentGrowth(formData, apy, "USD");
     } else {
-      result = calculateInvestmentGrowth(formData, apy);
+      mainResult = calculateInvestmentGrowth(formData, apy);
     }
-    // Calculate simulation results
-
-    // Pass results to parent component only if result is not null
-    if (result) {
-      onCalculate([result]);
+    
+    if (mainResult) {
+      results.push(mainResult);
     }
-  }, [formData, apyData, onCalculate]);
+    
+    // Calculate for competitor if selected
+    if (selectedCompetitor && competitorAPY[selectedCompetitor] !== undefined) {
+      const competitor = competitorInfo[selectedCompetitor];
+      const competitorFormData = { ...formData };
+      
+      // Just create a simulation result with competitor data
+      const competitorResult = calculateInvestmentGrowth(
+        competitorFormData, 
+        competitorAPY[selectedCompetitor],
+        competitor.isUSD ? competitor.assetType : undefined,
+        true,
+      );
+      
+      if (competitorResult) {
+        // Override some properties to display correctly
+        competitorResult.vaultId = selectedCompetitor;
+        competitorResult.networkId = competitor.networkId;
+        competitorResult.vaultName = competitor.name;
+        competitorResult.networkName = networkInfo[competitor.networkId]?.name || competitor.networkId;
+        
+        results.push(competitorResult);
+      }
+    }
+    
+    // Pass results to parent component
+    onCalculate(results);
+  }, [formData, apyData, selectedCompetitor, competitorAPY, onCalculate]);
 
   // If form data isn't loaded yet, don't render inputs
   if (!formData) {
@@ -139,6 +228,10 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
   const isSelectedVaultUSD = formData.vaultId
     ? (vaultInfo[formData.vaultId]?.isUSD ?? true)
     : true;
+
+  // Get available competitors for the selected vault
+  const availableCompetitors = formData?.vaultId ? (vaultCompetitors[formData.vaultId] || []) : [];
+  const hasCompetitors = availableCompetitors.length > 0;
 
   return (
     <Card>
@@ -225,6 +318,63 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
                 </SelectContent>
               </Select>
             </div>
+            
+            {/* Competitor toggle button */}
+            {formData.vaultId && hasCompetitors && (
+              <div className="grid gap-3">
+                <Button 
+                  variant="outline" 
+                  type="button"
+                  onClick={toggleCompetitors}
+                  className="flex items-center justify-center gap-2"
+                >
+                  <BarChart2 className="h-4 w-4" />
+                  {showCompetitors ? "Hide Competitors" : "Show Competitors"}
+                </Button>
+                
+                {/* Competitor selection as dropdown */}
+                {showCompetitors && (
+                  <div className="mt-2">
+                    <Label htmlFor="competitor" className="mb-2 block">Compare with competitor</Label>
+                    <Select
+                      value={selectedCompetitor === null ? "none" : selectedCompetitor}
+                      onValueChange={(value) => handleCompetitorSelect(value)}
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select competitor to compare" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="none">No competitor</SelectItem>
+                        {availableCompetitors.map(competitorId => {
+                          const competitor = competitorInfo[competitorId];
+                          return (
+                            <SelectItem key={competitorId} value={competitorId}>
+                              <div className="flex items-center gap-2">
+                                {competitor && (
+                                  <Image
+                                    src={competitor.image}
+                                    alt={competitor.name}
+                                    width={20}
+                                    height={20}
+                                    className="rounded-full"
+                                  />
+                                )}
+                                {competitor.name} - 
+                                {loadingCompetitor && !competitorAPY[competitorId] ? (
+                                  <Loader2 className="h-4 w-4 inline ml-1 animate-spin" />
+                                ) : competitorAPY[competitorId] ? (
+                                  `${(competitorAPY[competitorId] * 100).toFixed(2)}%`
+                                ) : "Loading..."}
+                              </div>
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+              </div>
+            )}
 
             {!isSelectedVaultUSD && (
               <div className="flex items-center space-x-2">

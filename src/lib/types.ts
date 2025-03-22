@@ -81,3 +81,27 @@ export interface FormData {
   vaultId: string;
   useUSD: boolean;
 }
+
+export interface CompetitorData {
+  pool: string;
+  project: string;
+  chain: string;
+  symbol: string;
+  apy: number;
+  // Add other fields as needed
+}
+
+export interface CompetitorApiResponse {
+  status: string;
+  data: CompetitorData[];
+}
+
+export interface CompetitorInfo {
+  id: string;
+  name: string;
+  image: string;
+  poolId: string;
+  assetType: string;
+  isUSD: boolean;
+  networkId: string;
+}

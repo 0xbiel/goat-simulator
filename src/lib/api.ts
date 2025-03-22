@@ -1,4 +1,4 @@
-import { ApiResponse, PriceApiResponse } from "./types";
+import { ApiResponse, PriceApiResponse, CompetitorApiResponse } from "./types";
 
 // Define a specific error type instead of using 'any'
 interface ApiError {
@@ -77,5 +77,32 @@ export async function fetchPriceData(): Promise<PriceApiResponse> {
 
     console.error("API Error:", apiError);
     throw apiError;
+  }
+}
+
+export async function fetchCompetitorAPY(poolId: string): Promise<number> {
+  try {
+    const response = await fetch(`https://yields.llama.fi/poolsEnriched?pool=${poolId}`);
+    
+    if (!response.ok) {
+      throw new Error(`API error: ${response.status}`);
+    }
+    
+    const data = await response.json() as CompetitorApiResponse;
+    
+    if (data.status === "success" && data.data && data.data.length > 0) {
+      // API returns APY as percentage (e.g., 2.62178%), so we divide by 100 to get decimal (0.0262178)
+      return data.data[0].apy / 100;
+    } else {
+      throw new Error("No APY data available");
+    }
+  } catch (error: unknown) {
+    const apiError: ApiError = {
+      message: error instanceof Error ? error.message : "Unknown error occurred",
+      details: error,
+    };
+
+    console.error("Competitor API Error:", apiError);
+    return 0;
   }
 }
