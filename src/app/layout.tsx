@@ -7,6 +7,23 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Goat Simulator",
   description: "Calculate and visualize your DeFi investment growth",
+  openGraph: {
+    title: "Goat Simulator",
+    description: "Calculate and visualize your DeFi investment growth",
+    images: [
+      {
+        url: "/opengraph.png",
+        width: 1200,
+        height: 630,
+      }
+    ],
+    url: "https://gpsim.vercel.app",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/opengraph.png"],
+  },
 };
 
 const manrope = Manrope({ weight: "500", subsets: ["latin"] });
@@ -25,12 +42,6 @@ export default function RootLayout({
     >
       <head>
         <link rel="icon" href="/assets/goa.png" />
-        <meta property="og:title" content="Goat Simulator" />
-        <meta property="og:description" content="Calculate and visualize your DeFi investment growth" />
-        <meta property="og:image" content="/opengraph.png" />
-        <meta property="og:url" content="https://gpsim.vercel.app" />
-        <meta property="twitter:image" content="/opengraph.png"></meta>
-        <meta property="twitter:card" content="summary_large_image"/>
       </head>
       <body
         className={`${manrope.className} antialiased`}
