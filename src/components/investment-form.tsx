@@ -329,13 +329,13 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
                   className="flex items-center justify-center gap-2"
                 >
                   <BarChart2 className="h-4 w-4" />
-                  {showCompetitors ? "Hide Competitors" : "Show Competitors"}
+                  {showCompetitors ? "Hide Other Yield Sources" : "Compare Other Yield Sources"}
                 </Button>
                 
                 {/* Competitor selection as dropdown */}
                 {showCompetitors && (
                   <div className="mt-2">
-                    <Label htmlFor="competitor" className="mb-2 block">Compare with competitor</Label>
+                    <Label htmlFor="competitor" className="mb-2 block">Other Yield Sources</Label>
                     <Select
                       value={selectedCompetitor === null ? "none" : selectedCompetitor}
                       onValueChange={(value) => handleCompetitorSelect(value)}
@@ -344,7 +344,7 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
                         <SelectValue placeholder="Select competitor to compare" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="none">No competitor</SelectItem>
+                        <SelectItem value="none">None</SelectItem>
                         {availableCompetitors.map(competitorId => {
                           const competitor = competitorInfo[competitorId];
                           return (
