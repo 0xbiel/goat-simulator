@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
-import { GeistSans } from "geist/font/sans";
-import { GeistMono } from "geist/font/mono";
-import { Analytics } from "@vercel/analytics/react"
+import { Manrope } from "next/font/google";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Goat Simulator",
-  description: "Calculate and visualize your DeFi investment growth"
+  description: "Calculate and visualize your DeFi investment growth",
 };
+
+const manrope = Manrope({ weight: "500", subsets: ["latin"] });
 
 export default function RootLayout({
   children,
@@ -15,16 +17,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="dark" style={{ colorScheme: "dark" }} suppressHydrationWarning>
+    <html
+      lang="en"
+      className="dark"
+      style={{ colorScheme: "dark" }}
+      suppressHydrationWarning
+    >
       <head>
         <link rel="icon" href="/assets/goa.png" />
       </head>
       <body
-        className={`${GeistSans.variable} ${GeistMono.variable} font-sans antialiased`}
+        className={`${manrope.className} antialiased`}
         suppressHydrationWarning
       >
         {children}
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

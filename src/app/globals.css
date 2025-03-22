@@ -49,39 +49,41 @@
 }
 
 /* Force dark mode variables on both root and dark class */
-:root, .dark, [data-theme="dark"] {
+:root,
+.dark,
+[data-theme="dark"] {
   --radius: 0.625rem;
-  --background: #0B0B0E;
-  --foreground: #FFFFFF;
-  --card: #12131A;
-  --card-foreground: #FFFFFF;
-  --popover: #12131A;
-  --popover-foreground: #FFFFFF;
-  --primary: #8E4EC6;
-  --primary-foreground: #FFFFFF;
-  --secondary: #191B24;
-  --secondary-foreground: #FFFFFF;
-  --muted: #191B24;
-  --muted-foreground: #A0A0A0;
-  --accent: #8E4EC6;
-  --accent-foreground: #FFFFFF;
-  --destructive: #FF4D4F;
+  --background: #0b0b0e;
+  --foreground: #ffffff;
+  --card: #12131a;
+  --card-foreground: #ffffff;
+  --popover: #12131a;
+  --popover-foreground: #ffffff;
+  --primary: #8e4ec6;
+  --primary-foreground: #ffffff;
+  --secondary: #191b24;
+  --secondary-foreground: #ffffff;
+  --muted: #191b24;
+  --muted-foreground: #a0a0a0;
+  --accent: #8e4ec6;
+  --accent-foreground: #ffffff;
+  --destructive: #ff4d4f;
   --border: rgba(255, 255, 255, 0.1);
-  --input: #191B24;
-  --ring: #8E4EC6;
-  --chart-1: #8E4EC6;
-  --chart-2: #3BA0FF;
-  --chart-3: #61DAFB;
-  --chart-4: #FFD166;
-  --chart-5: #F76E11;
-  --sidebar: #12131A;
-  --sidebar-foreground: #FFFFFF;
-  --sidebar-primary: #8E4EC6;
-  --sidebar-primary-foreground: #FFFFFF;
-  --sidebar-accent: #191B24;
-  --sidebar-accent-foreground: #FFFFFF;
+  --input: #191b24;
+  --ring: #8e4ec6;
+  --chart-1: #8e4ec6;
+  --chart-2: #3ba0ff;
+  --chart-3: #61dafb;
+  --chart-4: #ffd166;
+  --chart-5: #f76e11;
+  --sidebar: #12131a;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #8e4ec6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #191b24;
+  --sidebar-accent-foreground: #ffffff;
   --sidebar-border: rgba(255, 255, 255, 0.1);
-  --sidebar-ring: #8E4EC6;
+  --sidebar-ring: #8e4ec6;
 }
 
 @layer base {
@@ -89,23 +91,24 @@
     @apply border-border outline-ring/50;
   }
   html {
-    background-color: #0B0B0E !important;
+    background-color: #0b0b0e !important;
   }
   body {
     @apply bg-background text-foreground;
-    background-color: #0B0B0E !important;
-    color: #FFFFFF !important;
+    background-color: #0b0b0e !important;
+    color: #ffffff !important;
   }
-  
+
   /* Force dark mode on all card elements */
   .card {
-    background-color: #12131A !important;
-    color: #FFFFFF !important;
+    background-color: #12131a !important;
+    color: #ffffff !important;
   }
-  
+
   /* Force dark mode on inputs */
-  input, select {
-    background-color: #191B24 !important;
-    color: #FFFFFF !important;
+  input,
+  select {
+    background-color: #191b24 !important;
+    color: #ffffff !important;
   }
 }

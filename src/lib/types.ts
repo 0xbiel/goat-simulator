@@ -63,7 +63,7 @@ export interface SimulationResult {
   asset: string;
   color: string;
   timeFrameValue: number;
-  timeFrameUnit: 'months' | 'years';
+  timeFrameUnit: "months" | "years";
   returns: {
     finalValue: number;
     totalInvested: number;
@@ -76,7 +76,7 @@ export interface FormData {
   initialAmount: number;
   monthlyContribution: number;
   timeFrameValue: number;
-  timeFrameUnit: 'months' | 'years';
+  timeFrameUnit: "months" | "years";
   networkId: string;
   vaultId: string;
   useUSD: boolean;

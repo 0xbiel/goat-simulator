@@ -14,43 +14,43 @@ export const networkInfo: Record<string, NetworkInfo> = {
 
 // Vault metadata
 export const vaultInfo: Record<string, VaultInfo> = {
-  "ycUSDCe": {
+  ycUSDCe: {
     name: "USDC.e Vault",
     image: "/assets/usdc.svg",
     assetType: "USDC.e",
     isUSD: true,
   },
-  "ycUSDC": {
+  ycUSDC: {
     name: "USDC Vault",
     image: "/assets/usdc.svg",
     assetType: "USDC",
     isUSD: true,
   },
-  "ycCRVUSD": {
+  ycCRVUSD: {
     name: "crvUSD Vault",
     image: "/assets/crvusd.svg",
     assetType: "crvUSD",
     isUSD: true,
   },
-  "ycUSDT": {
+  ycUSDT: {
     name: "USDT Vault",
     image: "/assets/usdt.svg",
     assetType: "USDT",
     isUSD: true,
   },
-  "ycETH": {
+  ycETH: {
     name: "ETH Vault",
     image: "/assets/eth.svg",
     assetType: "WETH",
     isUSD: false,
   },
-  "ycsUSDC": {
+  ycsUSDC: {
     name: "USDC.e Vault",
     image: "/assets/usdc.svg",
     assetType: "USDC",
     isUSD: true,
   },
-  "stGOA": {
+  stGOA: {
     name: "GOA Staking",
     image: "/assets/goa.png",
     assetType: "GOA",
@@ -71,7 +71,7 @@ export const chartColors = [
 export function calculateInvestmentGrowth(
   formData: FormData,
   apy: number,
-  updateAsset?: string
+  updateAsset?: string,
 ): SimulationResult | null {
   // Return null for zero APY vaults
   if (apy === 0) {
@@ -87,11 +87,12 @@ export function calculateInvestmentGrowth(
     vaultId,
   } = formData;
 
-  const totalMonths = timeFrameUnit === 'years' ? timeFrameValue * 12 : timeFrameValue;
+  const totalMonths =
+    timeFrameUnit === "years" ? timeFrameValue * 12 : timeFrameValue;
   const dataPoints: { time: string; value: number }[] = [];
-  
+
   let currentValue = initialAmount;
-  
+
   // Add initial point
   dataPoints.push({
     time: "Start",
@@ -105,7 +106,7 @@ export function calculateInvestmentGrowth(
       // Calculate value based on annual compounded rate
       const years = month / 12;
       currentValue = initialAmount * Math.pow(1 + apy, years);
-      
+
       // Add data point every quarter or at the end
       if (month % 3 === 0 || month === totalMonths) {
         let timeLabel;
@@ -114,9 +115,12 @@ export function calculateInvestmentGrowth(
         } else {
           const years = Math.floor(month / 12);
           const remainingMonths = month % 12;
-          timeLabel = remainingMonths === 0 ? `${years}y` : `${years}y ${remainingMonths}m`;
+          timeLabel =
+            remainingMonths === 0
+              ? `${years}y`
+              : `${years}y ${remainingMonths}m`;
         }
-        
+
         dataPoints.push({
           time: timeLabel,
           value: Number(currentValue.toFixed(2)),
@@ -126,15 +130,15 @@ export function calculateInvestmentGrowth(
   } else {
     // If there are monthly contributions, we need to calculate month by month
     // Convert annual rate to monthly rate
-    const monthlyRate = Math.pow(1 + apy, 1/12) - 1;
-    
+    const monthlyRate = Math.pow(1 + apy, 1 / 12) - 1;
+
     for (let month = 1; month <= totalMonths; month++) {
       // Add interest
       currentValue = currentValue * (1 + monthlyRate);
-      
+
       // Add monthly contribution
       currentValue += monthlyContribution;
-      
+
       // Add data point every quarter or at the end
       if (month % 3 === 0 || month === totalMonths) {
         let timeLabel;
@@ -143,9 +147,12 @@ export function calculateInvestmentGrowth(
         } else {
           const years = Math.floor(month / 12);
           const remainingMonths = month % 12;
-          timeLabel = remainingMonths === 0 ? `${years}y` : `${years}y ${remainingMonths}m`;
+          timeLabel =
+            remainingMonths === 0
+              ? `${years}y`
+              : `${years}y ${remainingMonths}m`;
         }
-        
+
         dataPoints.push({
           time: timeLabel,
           value: Number(currentValue.toFixed(2)),
@@ -181,30 +188,33 @@ export function calculateInvestmentGrowth(
       finalValue,
       totalInvested,
       profit,
-      percentageReturn
-    }
+      percentageReturn,
+    },
   };
 }
-
 
 export function formatCurrency(value: number, assetType?: string): string {
   // Handle ETH or GOA display
   if (assetType === "WETH" || assetType === "ETH") {
-    return new Intl.NumberFormat('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 4,
-    }).format(value) + " ETH";
+    return (
+      new Intl.NumberFormat("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 4,
+      }).format(value) + " ETH"
+    );
   } else if (assetType === "GOA") {
-    return new Intl.NumberFormat('en-US', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 4,
-    }).format(value) + " GOA";
+    return (
+      new Intl.NumberFormat("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 4,
+      }).format(value) + " GOA"
+    );
   }
-  
+
   // Default to USD formatting
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
   }).format(value);
