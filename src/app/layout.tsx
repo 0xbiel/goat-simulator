@@ -15,6 +15,7 @@ export const metadata: Metadata = {
         url: "/opengraph.png",
         width: 1200,
         height: 630,
+        alt: "Goat Simulator - Calculate and visualize your DeFi investment growth",
       }
     ],
     url: "https://gpsim.vercel.app",
@@ -23,6 +24,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     images: ["/opengraph.png"],
+    title: "Goat Simulator",
+    description: "Calculate and visualize your DeFi investment growth",
   },
 };
 

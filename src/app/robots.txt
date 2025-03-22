@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /api/og
+
+Sitemap: https://gpsim.vercel.app/sitemap.xml
