@@ -14,6 +14,10 @@ export const networkInfo: Record<string, NetworkInfo> = {
     name: "Ethereum",
     image: "/networks/ethereum.svg",
   },
+  "8453": {
+    name: "Base",
+    image: "/networks/base.webp",
+  }
 };
 
 // Vault metadata
@@ -99,24 +103,79 @@ export const competitorInfo: Record<string, CompetitorInfo> = {
     assetType: "crvUSD",
     isUSD: true,
     networkId: "1" // ETH Mainnet
+  },
+  "morpho-blue-sparkUSDC": {
+    id: "SPARKUSDC",
+    name: "Morpho SPARKUSDC",
+    image: "/assets/morpho.webp",
+    poolId: "9f146531-9c31-46ba-8e26-6b59bdaca9ff", // This is a placeholder, use the correct pool ID
+    assetType: "USDC",
+    isUSD: true,
+    networkId: "8453" // Base
+  },
+  "morpho-blue-moonwellETH": {
+    id: "morpho-blue-moonwellETH",
+    name: "Morpho Moonwell ETH",
+    image: "/assets/morpho.webp",
+    poolId: "e41c04d6-53b7-4e36-8de0-edda6f627103",
+    assetType: "WETH",
+    isUSD: false,
+    networkId: "8453"
+  },
+  "compound-v3-usdt-arb": {
+    id: "compound-v3-usdt-arb",
+    name: "Compound V3 USDT",
+    image: "/assets/compound.webp",
+    poolId: "85247b13-8180-44e7-b38c-4d324cc68a92", // This is a placeholder, use the correct pool ID
+    assetType: "USDT",
+    isUSD: true,
+    networkId: "42161" // Arbitrum
+  },
+  "crvusd-yearn": {
+    id: "crvusd-yearn",
+    name: "Yearn crvUSD",
+    image: "/assets/yearn.webp",
+    poolId: "a4236681-173c-4a52-97d2-30c61f07141b", // This is a placeholder, use the correct pool ID
+    assetType: "crvUSD",
+    isUSD: true,
+    networkId: "1" // ETH Mainnet
   }
 };
+
+const usdcCompetitors = [
+  "aave-usdc-arbitrum",
+  "morpho-blue-sparkUSDC",
+];
+
+const usdtCompetitors = [
+  "aave-usdt-arbitrum",
+  "compound-v3-usdt-arb",
+];
+
+const ethCompetitors = [
+  "aave-eth-arbitrum",
+  "morpho-blue-moonwellETH",
+];
+
+const crvUSDCompetitors = [
+  "scrvusd",
+  "crvusd-yearn",
+];
 
 // Map vault types to their relevant competitors
 export const vaultCompetitors: Record<string, string[]> = {
   // USDC vaults and their competitors
-  "ycUSDC": ["aave-usdc-arbitrum"],
-  "ycUSDCe": ["aave-usdc-arbitrum"],
-  "ycsUSDC": ["aave-usdc-arbitrum"],
-  
+  "ycUSDC": usdcCompetitors,
+  "ycUSDCe": usdcCompetitors,
+  "ycsUSDC": usdcCompetitors,
 
-  "ycUSDT": ["aave-usdt-arbitrum"],
+  "ycUSDT": usdtCompetitors,
 
   // ETH vaults and their competitors
-  "ycETH": ["aave-eth-arbitrum"],
+  "ycETH": ethCompetitors,
 
   // crvUSD vaults and their competitors
-  "ycCRVUSD": ["scrvusd"],
+  "ycCRVUSD": crvUSDCompetitors,
 };
 
 // Chart colors
