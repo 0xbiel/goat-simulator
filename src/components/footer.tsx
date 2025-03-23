@@ -1,11 +1,33 @@
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@radix-ui/react-separator";
 import { Globe } from "lucide-react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
+
 export default function Footer() {
+  const [direction, setDirection] = useState<"vertical" | "horizontal">(
+    "horizontal",
+  );
+
+  useEffect(() => {
+      const handleResize = () => {
+        setDirection(window.innerWidth >= 768 ? "horizontal" : "vertical");
+      };
+  
+      // Set initial direction
+      handleResize();
+  
+      // Add event listener for window resize
+      window.addEventListener("resize", handleResize);
+  
+      // Clean up event listener
+      return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
   return (
-    <div className="w-full py-2 max-w-[100%] mx-auto px-[24px] mt-[24px]">
-      <Card className="p-4">
+    <div className={direction == "horizontal" ? "w-full py-2 max-w-[100%] mx-auto px-[24px] mt-[24px]" : "w-full max-w-[100%] mx-auto mt-[24px]"}>
+      <Card className="p-4 gap-4">
         <div className="flex items-center justify-between px-2">
           <div className="flex items-center gap-2">
             <Image src="/icon.svg" alt="GoatFi" width={28} height={28} />
@@ -54,6 +76,7 @@ export default function Footer() {
             </Button>
           </div>
         </div>
+        <Separator className="mx-1 border" />
         <div className="flex items-center justify-center space-x-4">
           <p className="text-gray-300">Made by @0xbiel</p>
           <Button
