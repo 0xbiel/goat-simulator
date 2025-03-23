@@ -125,14 +125,59 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
 
   // Function to toggle competitor visibility
   const toggleCompetitors = () => {
+    const newShowCompetitors = !showCompetitors;
+    setShowCompetitors(newShowCompetitors);
+    
     // Reset competitor selection when hiding
-    if (showCompetitors) {
+    if (!newShowCompetitors) {
       setSelectedCompetitor(null);
+    } 
+    // Load all competitor data when showing
+    else if (formData?.vaultId) {
+      loadAllCompetitorsData(formData.vaultId);
     }
-    setShowCompetitors(!showCompetitors);
   };
 
-  // Function to load competitor APY data
+  // Function to load all competitor APY data for a vault
+  const loadAllCompetitorsData = async (vaultId: string) => {
+    const competitors = vaultCompetitors[vaultId] || [];
+    if (competitors.length === 0) return;
+
+    setLoadingCompetitor(true);
+    try {
+      // Create an array of promises for all competitors that haven't been loaded yet
+      const loadPromises = competitors
+        .filter(id => competitorAPY[id] === undefined)
+        .map(async (competitorId) => {
+          try {
+            const poolId = competitorInfo[competitorId].poolId;
+            const apy = await fetchCompetitorAPY(poolId);
+            return { competitorId, apy };
+          } catch (error) {
+            console.error(`Error loading data for ${competitorId}:`, error);
+            return { competitorId, apy: 0 }; // Default value on error
+          }
+        });
+
+      // Wait for all fetches to complete
+      const results = await Promise.all(loadPromises);
+      
+      // Update the state with all results at once
+      setCompetitorAPY(prev => {
+        const updated = { ...prev };
+        results.forEach(result => {
+          updated[result.competitorId] = result.apy;
+        });
+        return updated;
+      });
+    } catch (error) {
+      console.error("Error loading competitor data:", error);
+    } finally {
+      setLoadingCompetitor(false);
+    }
+  };
+
+  // Function to load competitor APY data (individual)
   const loadCompetitorData = async (competitorId: string) => {
     if (competitorAPY[competitorId] !== undefined) {
       return; // Already loaded
@@ -155,12 +200,14 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
     // Convert "none" string back to null for internal processing
     const actualCompetitorId = competitorId === "none" ? null : competitorId;
     setSelectedCompetitor(actualCompetitorId);
-    
-    // Load data if a competitor is selected and data isn't already loaded
-    if (actualCompetitorId && competitorAPY[actualCompetitorId] === undefined) {
-      loadCompetitorData(actualCompetitorId);
-    }
   };
+
+  // Auto-load competitor data when vault changes and competitors are shown
+  useEffect(() => {
+    if (showCompetitors && formData?.vaultId) {
+      loadAllCompetitorsData(formData.vaultId);
+    }
+  }, [formData?.vaultId, showCompetitors]);
 
   // Auto-calculate whenever form data or competitor selection changes
   useEffect(() => {
