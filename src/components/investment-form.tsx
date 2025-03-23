@@ -177,24 +177,6 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
     }
   };
 
-  // Function to load competitor APY data (individual)
-  const loadCompetitorData = async (competitorId: string) => {
-    if (competitorAPY[competitorId] !== undefined) {
-      return; // Already loaded
-    }
-
-    setLoadingCompetitor(true);
-    try {
-      const poolId = competitorInfo[competitorId].poolId;
-      const apy = await fetchCompetitorAPY(poolId);
-      setCompetitorAPY(prev => ({ ...prev, [competitorId]: apy }));
-    } catch (error) {
-      console.error("Error loading competitor data:", error);
-    } finally {
-      setLoadingCompetitor(false);
-    }
-  };
-
   // Function to select a competitor
   const handleCompetitorSelect = (competitorId: string | null) => {
     // Convert "none" string back to null for internal processing
