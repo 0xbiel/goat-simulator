@@ -81,6 +81,12 @@ export async function fetchPriceData(): Promise<PriceApiResponse> {
 }
 
 export async function fetchCompetitorAPY(poolId: string): Promise<number> {
+  if (poolId === "treasury") {
+    return 0.042;
+  }
+  if (poolId === "banksavings") {
+    return 0.005;
+  }
   try {
     const response = await fetch(`https://yields.llama.fi/poolsEnriched?pool=${poolId}`);
     

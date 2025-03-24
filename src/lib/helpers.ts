@@ -17,6 +17,10 @@ export const networkInfo: Record<string, NetworkInfo> = {
   "8453": {
     name: "Base",
     image: "/networks/base.webp",
+  },
+  "0": {
+    name: " ",
+    image: "/bank.svg",
   }
 };
 
@@ -139,27 +143,61 @@ export const competitorInfo: Record<string, CompetitorInfo> = {
     assetType: "crvUSD",
     isUSD: true,
     networkId: "1" // ETH Mainnet
+  },
+  "treasury": {
+    id: "treasury",
+    name: "Treasuries",
+    image: "/landmark.svg",
+    poolId: "treasury",
+    assetType: "USDC",
+    isUSD: true,
+    networkId: "0"
+  },
+  "banksavings": {
+    id: "banksavings",
+    name: "Bank Savings",
+    image: "/bank.svg",
+    poolId: "banksavings",
+    assetType: "USDC",
+    isUSD: true,
+    networkId: "0"
+  },
+  "steth": {
+    id: "steth",
+    name: "Lido stETH",
+    image: "/assets/lido.webp",
+    poolId: "747c1d2a-c668-4682-b9f9-296708a3dd90",
+    assetType: "ETH",
+    isUSD: false,
+    networkId: "1" // ETH Mainnet
   }
 };
 
 const usdcCompetitors = [
   "aave-usdc-arbitrum",
   "morpho-blue-sparkUSDC",
+  "treasury",
+  "banksavings",
 ];
 
 const usdtCompetitors = [
   "aave-usdt-arbitrum",
   "compound-v3-usdt-arb",
+  "treasury",
+  "banksavings",
 ];
 
 const ethCompetitors = [
   "aave-eth-arbitrum",
   "morpho-blue-moonwellETH",
+  "steth",
 ];
 
 const crvUSDCompetitors = [
   "scrvusd",
   "crvusd-yearn",
+  "treasury",
+  "banksavings",
 ];
 
 // Map vault types to their relevant competitors

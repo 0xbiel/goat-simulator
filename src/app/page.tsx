@@ -61,8 +61,9 @@ export default function Home() {
           // Desktop view with resizable panels
           <ResizablePanelGroup direction="horizontal" className="min-h-[80vh]">
             <ResizablePanel
-              defaultSize={25}
-              minSize={20}
+              defaultSize={30}
+              minSize={27}
+              maxSize={80}
               className="md:min-h-0"
             >
               <div className="p-4 md:p-6 h-full overflow-y-auto">
@@ -74,7 +75,7 @@ export default function Home() {
               </div>
             </ResizablePanel>
             <ResizableHandle withHandle />
-            <ResizablePanel defaultSize={75}>
+            <ResizablePanel defaultSize={70}>
               <div className="p-4 md:p-6 h-full overflow-y-auto">
                 <h2 className="text-xl font-semibold mb-4">
                   Projection Results
