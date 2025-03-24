@@ -35,7 +35,10 @@ export default function Footer() {
     >
       <Card className="p-4 gap-4">
         <div className="flex items-center justify-between px-2">
-          <div className="flex items-center gap-2">
+          <div
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => window.open("https://app.goat.fi", "_blank")}
+          >
             <Image src="/icon.svg" alt="GoatFi" width={28} height={28} />
             <h1
               className={`text-[20px] font-bold tracking-tight hidden sm:block weight-[700]`}
@@ -85,17 +88,34 @@ export default function Footer() {
         <Separator className="mx-1 border" />
         <div className="flex items-center justify-between px-2">
           <div className="flex items-center gap-2">
-          <p className="text-gray-300">Made by @0xbiel</p>
-          <Button
-            variant="ghost"
-            className="p-2 h-auto text-gray-500"
-            onClick={() => window.open("https://twitter.com/0xbiel", "_blank")}
-          >
-            <Image src="/socials/x.svg" alt="Twitter" width={16} height={16} />
-          </Button>
+            <p className="text-gray-300">Made by @0xbiel</p>
+            <Button
+              variant="ghost"
+              className="p-2 h-auto text-gray-500"
+              onClick={() =>
+                window.open("https://twitter.com/0xbiel", "_blank")
+              }
+            >
+              <Image
+                src="/socials/x.svg"
+                alt="Twitter"
+                width={16}
+                height={16}
+              />
+            </Button>
           </div>
-          <div className={`flex items-center gap-2 ${direction == "horizontal" ? "" : "hidden"}`}>
-            <div onClick={() => window.open("https://defillama.com/protocol/goat-protocol", "_blank")} className="flex items-center gap-2 hover:underline cursor-pointer">
+          <div
+            className={`flex items-center gap-2 ${direction == "horizontal" ? "" : "hidden"}`}
+          >
+            <div
+              onClick={() =>
+                window.open(
+                  "https://defillama.com/protocol/goat-protocol",
+                  "_blank",
+                )
+              }
+              className="flex items-center gap-2 hover:underline cursor-pointer"
+            >
               <Image
                 src="/socials/defillama.svg"
                 alt="DefiLlama"
@@ -105,7 +125,12 @@ export default function Footer() {
               <a className="text-sm">DefiLlama</a>
             </div>
             ·
-            <div onClick={() => window.open("https://dune.com/0xbiel/goat", "_blank")} className="flex items-center gap-2 hover:underline cursor-pointer">
+            <div
+              onClick={() =>
+                window.open("https://dune.com/0xbiel/goat", "_blank")
+              }
+              className="flex items-center gap-2 hover:underline cursor-pointer"
+            >
               <Image
                 src="/socials/dune.svg"
                 alt="Dune Analytics"
@@ -115,8 +140,6 @@ export default function Footer() {
               <a className="text-sm">Dune Analytics</a>
             </div>
           </div>
-          
-
         </div>
       </Card>
     </div>
