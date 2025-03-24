@@ -705,7 +705,10 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
                   className="w-full"
                   onClick={() => {
                     const networkName = networkInfo[formData.networkId]?.name || formData.networkId;
-                    const url = `https://app.goat.fi/vault/${networkName.toLowerCase()}/${formData.vaultId.toLowerCase()}`;
+                    let url = `https://app.goat.fi/vault/${networkName.toLowerCase()}/${formData.vaultId.toLowerCase()}`;
+                    if (formData.vaultId === "stGOA") {
+                      url = "https://app.goat.fi/stake";
+                    }
                     window.open(url, '_blank');
                   }}
                 >
