@@ -1,4 +1,10 @@
-import { NetworkInfo, VaultInfo, SimulationResult, FormData, CompetitorInfo } from "./types";
+import {
+  NetworkInfo,
+  VaultInfo,
+  SimulationResult,
+  FormData,
+  CompetitorInfo,
+} from "./types";
 
 // Network metadata
 export const networkInfo: Record<string, NetworkInfo> = {
@@ -21,7 +27,7 @@ export const networkInfo: Record<string, NetworkInfo> = {
   "0": {
     name: " ",
     image: "/bank.svg",
-  }
+  },
 };
 
 // Vault metadata
@@ -79,7 +85,7 @@ export const competitorInfo: Record<string, CompetitorInfo> = {
     poolId: "d9fa8e14-0447-4207-9ae8-7810199dfa1f",
     assetType: "USDC",
     isUSD: true,
-    networkId: "42161" // Arbitrum
+    networkId: "42161", // Arbitrum
   },
   "aave-eth-arbitrum": {
     id: "aave-eth-arbitrum",
@@ -88,7 +94,7 @@ export const competitorInfo: Record<string, CompetitorInfo> = {
     poolId: "e302de4d-952e-4e18-9749-0a9dc86e98bc", // This is a placeholder, use the correct pool ID
     assetType: "WETH",
     isUSD: false,
-    networkId: "42161" // Arbitrum
+    networkId: "42161", // Arbitrum
   },
   "aave-usdt-arbitrum": {
     id: "aave-usdt-arbitrum",
@@ -97,16 +103,16 @@ export const competitorInfo: Record<string, CompetitorInfo> = {
     poolId: "3a6cc030-738d-4e19-8a40-e63e9c4d5a6f", // This is a placeholder, use the correct pool ID
     assetType: "USDT",
     isUSD: true,
-    networkId: "42161" // Arbitrum
+    networkId: "42161", // Arbitrum
   },
-  "scrvusd": {
+  scrvusd: {
     id: "scrvusd",
     name: "SCRVUSD",
     image: "/assets/scrvusd.png",
     poolId: "5fd328af-4203-471b-bd16-1705c726d926", // This is a placeholder, use the correct pool ID
     assetType: "crvUSD",
     isUSD: true,
-    networkId: "1" // ETH Mainnet
+    networkId: "1", // ETH Mainnet
   },
   "morpho-blue-sparkUSDC": {
     id: "SPARKUSDC",
@@ -115,7 +121,7 @@ export const competitorInfo: Record<string, CompetitorInfo> = {
     poolId: "9f146531-9c31-46ba-8e26-6b59bdaca9ff", // This is a placeholder, use the correct pool ID
     assetType: "USDC",
     isUSD: true,
-    networkId: "8453" // Base
+    networkId: "8453", // Base
   },
   "morpho-blue-moonwellETH": {
     id: "morpho-blue-moonwellETH",
@@ -124,7 +130,7 @@ export const competitorInfo: Record<string, CompetitorInfo> = {
     poolId: "e41c04d6-53b7-4e36-8de0-edda6f627103",
     assetType: "WETH",
     isUSD: false,
-    networkId: "8453"
+    networkId: "8453",
   },
   "compound-v3-usdt-arb": {
     id: "compound-v3-usdt-arb",
@@ -133,7 +139,7 @@ export const competitorInfo: Record<string, CompetitorInfo> = {
     poolId: "85247b13-8180-44e7-b38c-4d324cc68a92", // This is a placeholder, use the correct pool ID
     assetType: "USDT",
     isUSD: true,
-    networkId: "42161" // Arbitrum
+    networkId: "42161", // Arbitrum
   },
   "crvusd-yearn": {
     id: "crvusd-yearn",
@@ -142,35 +148,35 @@ export const competitorInfo: Record<string, CompetitorInfo> = {
     poolId: "a4236681-173c-4a52-97d2-30c61f07141b", // This is a placeholder, use the correct pool ID
     assetType: "crvUSD",
     isUSD: true,
-    networkId: "1" // ETH Mainnet
+    networkId: "1", // ETH Mainnet
   },
-  "treasury": {
+  treasury: {
     id: "treasury",
     name: "Treasuries",
     image: "/landmark.svg",
     poolId: "treasury",
     assetType: "USDC",
     isUSD: true,
-    networkId: "0"
+    networkId: "0",
   },
-  "banksavings": {
+  banksavings: {
     id: "banksavings",
     name: "Bank Savings",
     image: "/bank.svg",
     poolId: "banksavings",
     assetType: "USDC",
     isUSD: true,
-    networkId: "0"
+    networkId: "0",
   },
-  "steth": {
+  steth: {
     id: "steth",
     name: "Lido stETH",
     image: "/assets/lido.webp",
     poolId: "747c1d2a-c668-4682-b9f9-296708a3dd90",
     assetType: "ETH",
     isUSD: false,
-    networkId: "1" // ETH Mainnet
-  }
+    networkId: "1", // ETH Mainnet
+  },
 };
 
 const usdcCompetitors = [
@@ -203,17 +209,17 @@ const crvUSDCompetitors = [
 // Map vault types to their relevant competitors
 export const vaultCompetitors: Record<string, string[]> = {
   // USDC vaults and their competitors
-  "ycUSDC": usdcCompetitors,
-  "ycUSDCe": usdcCompetitors,
-  "ycsUSDC": usdcCompetitors,
+  ycUSDC: usdcCompetitors,
+  ycUSDCe: usdcCompetitors,
+  ycsUSDC: usdcCompetitors,
 
-  "ycUSDT": usdtCompetitors,
+  ycUSDT: usdtCompetitors,
 
   // ETH vaults and their competitors
-  "ycETH": ethCompetitors,
+  ycETH: ethCompetitors,
 
   // crvUSD vaults and their competitors
-  "ycCRVUSD": crvUSDCompetitors,
+  ycCRVUSD: crvUSDCompetitors,
 };
 
 // Chart colors

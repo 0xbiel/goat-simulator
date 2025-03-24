@@ -88,14 +88,16 @@ export async function fetchCompetitorAPY(poolId: string): Promise<number> {
     return 0.005;
   }
   try {
-    const response = await fetch(`https://yields.llama.fi/poolsEnriched?pool=${poolId}`);
-    
+    const response = await fetch(
+      `https://yields.llama.fi/poolsEnriched?pool=${poolId}`,
+    );
+
     if (!response.ok) {
       throw new Error(`API error: ${response.status}`);
     }
-    
-    const data = await response.json() as CompetitorApiResponse;
-    
+
+    const data = (await response.json()) as CompetitorApiResponse;
+
     if (data.status === "success" && data.data && data.data.length > 0) {
       // API returns APY as percentage (e.g., 2.62178%), so we divide by 100 to get decimal (0.0262178)
       return data.data[0].apy / 100;
@@ -104,7 +106,8 @@ export async function fetchCompetitorAPY(poolId: string): Promise<number> {
     }
   } catch (error: unknown) {
     const apiError: ApiError = {
-      message: error instanceof Error ? error.message : "Unknown error occurred",
+      message:
+        error instanceof Error ? error.message : "Unknown error occurred",
       details: error,
     };
 

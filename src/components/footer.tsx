@@ -11,22 +11,28 @@ export default function Footer() {
   );
 
   useEffect(() => {
-      const handleResize = () => {
-        setDirection(window.innerWidth >= 768 ? "horizontal" : "vertical");
-      };
-  
-      // Set initial direction
-      handleResize();
-  
-      // Add event listener for window resize
-      window.addEventListener("resize", handleResize);
-  
-      // Clean up event listener
-      return () => window.removeEventListener("resize", handleResize);
-    }, []);
+    const handleResize = () => {
+      setDirection(window.innerWidth >= 768 ? "horizontal" : "vertical");
+    };
+
+    // Set initial direction
+    handleResize();
+
+    // Add event listener for window resize
+    window.addEventListener("resize", handleResize);
+
+    // Clean up event listener
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
-    <div className={direction == "horizontal" ? "w-full py-2 max-w-[100%] mx-auto px-[24px] mt-[24px]" : "w-full max-w-[100%] mx-auto mt-[24px]"}>
+    <div
+      className={
+        direction == "horizontal"
+          ? "w-full py-2 max-w-[100%] mx-auto px-[24px] mt-[24px]"
+          : "w-full max-w-[100%] mx-auto mt-[24px]"
+      }
+    >
       <Card className="p-4 gap-4">
         <div className="flex items-center justify-between px-2">
           <div className="flex items-center gap-2">

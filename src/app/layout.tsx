@@ -16,7 +16,7 @@ export const metadata: Metadata = {
         width: 1200,
         height: 630,
         alt: "Goat Simulator - Calculate and visualize your DeFi investment growth",
-      }
+      },
     ],
     url: "https://gpsim.vercel.app",
     type: "website",

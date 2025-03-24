@@ -42,17 +42,21 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
 
   const [formData, setFormData] = useState<FormData | null>(null);
   const dataFetchedRef = useRef(false);
-  
+
   // New state for competitor features
   const [showCompetitors, setShowCompetitors] = useState(false);
-  const [competitorAPY, setCompetitorAPY] = useState<Record<string, number>>({});
-  const [selectedCompetitor, setSelectedCompetitor] = useState<string | null>(null);
+  const [competitorAPY, setCompetitorAPY] = useState<Record<string, number>>(
+    {},
+  );
+  const [selectedCompetitor, setSelectedCompetitor] = useState<string | null>(
+    null,
+  );
   const [loadingCompetitor, setLoadingCompetitor] = useState(false);
-  
+
   // New state for vault selection modal
   const [vaultModalOpen, setVaultModalOpen] = useState(false);
   // New state for search functionality
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
 
   // Initialize form data on client-side only
   useEffect(() => {
@@ -120,43 +124,55 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
         networkId: value as string,
         vaultId: firstVaultId,
       }));
-      
+
       // Reset competitor selection when network changes
       const newAvailableCompetitors = vaultCompetitors[firstVaultId] || [];
-      if (showCompetitors && selectedCompetitor && !newAvailableCompetitors.includes(selectedCompetitor)) {
+      if (
+        showCompetitors &&
+        selectedCompetitor &&
+        !newAvailableCompetitors.includes(selectedCompetitor)
+      ) {
         setSelectedCompetitor(null);
       }
     }
-    
+
     // If vault changes, check if the selected competitor is available for this vault
     if (name === "vaultId") {
       const newVaultId = value as string;
       const newAvailableCompetitors = vaultCompetitors[newVaultId] || [];
-      
+
       // If there's a selected competitor that's not available for the new vault, reset it
-      if (selectedCompetitor && !newAvailableCompetitors.includes(selectedCompetitor)) {
+      if (
+        selectedCompetitor &&
+        !newAvailableCompetitors.includes(selectedCompetitor)
+      ) {
         setSelectedCompetitor(null);
       }
     }
   };
 
   // Function to handle input changes and strip leading zeros
-  const handleNumberInputChange = (e: React.ChangeEvent<HTMLInputElement>, name: keyof FormData) => {
+  const handleNumberInputChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    name: keyof FormData,
+  ) => {
     const inputValue = e.target.value;
-    
+
     // Remove any leading zeros but keep the first zero if it's the only digit
-    const cleanedValue = inputValue.replace(/^0+(?=\d)/, '');
-    
+    const cleanedValue = inputValue.replace(/^0+(?=\d)/, "");
+
     // Parse as float for the state
     const numericValue = parseFloat(cleanedValue) || 0;
-    
+
     // Update the form data state with the numeric value
     handleChange(name, numericValue);
-    
+
     // Need to update the input field directly to show periods instead of commas
     // Using setTimeout to ensure this runs after React's event handling
     setTimeout(() => {
-      const inputElement = document.getElementById(name as string) as HTMLInputElement;
+      const inputElement = document.getElementById(
+        name as string,
+      ) as HTMLInputElement;
       if (inputElement && inputElement.value !== cleanedValue) {
         inputElement.value = cleanedValue;
       }
@@ -167,11 +183,11 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
   const toggleCompetitors = () => {
     const newShowCompetitors = !showCompetitors;
     setShowCompetitors(newShowCompetitors);
-    
+
     // Reset competitor selection when hiding
     if (!newShowCompetitors) {
       setSelectedCompetitor(null);
-    } 
+    }
     // Load all competitor data when showing
     else if (formData?.vaultId) {
       loadAllCompetitorsData(formData.vaultId);
@@ -187,7 +203,7 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
     try {
       // Create an array of promises for all competitors that haven't been loaded yet
       const loadPromises = competitors
-        .filter(id => competitorAPY[id] === undefined)
+        .filter((id) => competitorAPY[id] === undefined)
         .map(async (competitorId) => {
           try {
             const poolId = competitorInfo[competitorId].poolId;
@@ -201,11 +217,11 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
 
       // Wait for all fetches to complete
       const results = await Promise.all(loadPromises);
-      
+
       // Update the state with all results at once
-      setCompetitorAPY(prev => {
+      setCompetitorAPY((prev) => {
         const updated = { ...prev };
-        results.forEach(result => {
+        results.forEach((result) => {
           updated[result.competitorId] = result.apy;
         });
         return updated;
@@ -223,22 +239,26 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
     const actualCompetitorId = competitorId === "none" ? null : competitorId;
     setSelectedCompetitor(actualCompetitorId);
   };
-  
+
   // Function to handle vault selection from modal
   const handleVaultSelect = (vaultId: string) => {
     if (!formData) return;
-    
+
     setFormData((prev) => ({
       ...prev!,
       vaultId: vaultId,
     }));
-    
+
     // Close the modal after selection
     setVaultModalOpen(false);
-    
+
     // Reset competitor selection when vault changes
     const newAvailableCompetitors = vaultCompetitors[vaultId] || [];
-    if (showCompetitors && selectedCompetitor && !newAvailableCompetitors.includes(selectedCompetitor)) {
+    if (
+      showCompetitors &&
+      selectedCompetitor &&
+      !newAvailableCompetitors.includes(selectedCompetitor)
+    ) {
       setSelectedCompetitor(null);
     }
   };
@@ -246,7 +266,7 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
   // Reset search query when modal closes
   useEffect(() => {
     if (!vaultModalOpen) {
-      setSearchQuery('');
+      setSearchQuery("");
     }
   }, [vaultModalOpen]);
 
@@ -262,45 +282,46 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
     if (!apyData || !formData?.networkId || !formData?.vaultId) return;
 
     const results: SimulationResult[] = [];
-    
+
     // Calculate for main vault
     const apy = Number(apyData.data[formData.networkId][formData.vaultId]);
-    
+
     let mainResult;
     if (formData.useUSD && !vaultInfo[formData.vaultId]?.isUSD) {
       mainResult = calculateInvestmentGrowth(formData, apy, "USD");
     } else {
       mainResult = calculateInvestmentGrowth(formData, apy);
     }
-    
+
     if (mainResult) {
       results.push(mainResult);
     }
-    
+
     // Calculate for competitor if selected
     if (selectedCompetitor && competitorAPY[selectedCompetitor] !== undefined) {
       const competitor = competitorInfo[selectedCompetitor];
       const competitorFormData = { ...formData };
-      
+
       // Just create a simulation result with competitor data
       const competitorResult = calculateInvestmentGrowth(
-        competitorFormData, 
+        competitorFormData,
         competitorAPY[selectedCompetitor],
         competitor.isUSD ? competitor.assetType : undefined,
         true,
       );
-      
+
       if (competitorResult) {
         // Override some properties to display correctly
         competitorResult.vaultId = selectedCompetitor;
         competitorResult.networkId = competitor.networkId;
         competitorResult.vaultName = competitor.name;
-        competitorResult.networkName = networkInfo[competitor.networkId]?.name || competitor.networkId;
-        
+        competitorResult.networkName =
+          networkInfo[competitor.networkId]?.name || competitor.networkId;
+
         results.push(competitorResult);
       }
     }
-    
+
     // Pass results to parent component
     onCalculate(results);
   }, [formData, apyData, selectedCompetitor, competitorAPY, onCalculate]);
@@ -325,18 +346,28 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
     : true;
 
   // Get available competitors for the selected vault
-  const availableCompetitors = formData?.vaultId ? (vaultCompetitors[formData.vaultId] || []) : [];
+  const availableCompetitors = formData?.vaultId
+    ? vaultCompetitors[formData.vaultId] || []
+    : [];
   const hasCompetitors = availableCompetitors.length > 0;
-  
+
   // Get the current selected vault info for display
-  const selectedVaultInfo = formData.vaultId ? vaultInfo[formData.vaultId] : undefined;
-  const selectedVaultApy = formData.networkId && formData.vaultId && apyData ? 
-    Number(apyData.data[formData.networkId][formData.vaultId]) * 100 : 0;
-    
+  const selectedVaultInfo = formData.vaultId
+    ? vaultInfo[formData.vaultId]
+    : undefined;
+  const selectedVaultApy =
+    formData.networkId && formData.vaultId && apyData
+      ? Number(apyData.data[formData.networkId][formData.vaultId]) * 100
+      : 0;
+
   // Get the current selected competitor info for display
-  const selectedCompetitorInfo = selectedCompetitor ? competitorInfo[selectedCompetitor] : null;
-  const selectedCompetitorApy = selectedCompetitor && competitorAPY[selectedCompetitor] !== undefined ? 
-    competitorAPY[selectedCompetitor] * 100 : undefined;
+  const selectedCompetitorInfo = selectedCompetitor
+    ? competitorInfo[selectedCompetitor]
+    : null;
+  const selectedCompetitorApy =
+    selectedCompetitor && competitorAPY[selectedCompetitor] !== undefined
+      ? competitorAPY[selectedCompetitor] * 100
+      : undefined;
 
   return (
     <Card>
@@ -385,7 +416,7 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
 
             <div className="grid gap-3">
               <Label htmlFor="vaultId">Select Vault</Label>
-              
+
               {/* Vault selection button that opens the modal */}
               <Button
                 variant="outline"
@@ -412,14 +443,14 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
                 )}
                 <ChevronRight className="h-4 w-4 ml-2 opacity-50" />
               </Button>
-              
+
               {/* Vault selection modal */}
               <Dialog open={vaultModalOpen} onOpenChange={setVaultModalOpen}>
                 <DialogContent className="sm:max-w-[600px] max-h-[80vh] overflow-y-auto bg-[#12131A]">
                   <DialogHeader>
                     <DialogTitle>Select a Vault</DialogTitle>
                   </DialogHeader>
-                  
+
                   {/* Search input */}
                   <div>
                     <Input
@@ -430,7 +461,7 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
                       className="w-full bg-[#252733]"
                     />
                   </div>
-                  
+
                   <div className="grid grid-cols-1 gap-4 mt-4">
                     {formData.networkId &&
                       apyData &&
@@ -438,11 +469,11 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
                         .filter((vaultId) => {
                           const vault = vaultInfo[vaultId];
                           const vaultName = vault?.name || vaultId;
-                          const assetType = vault?.assetType || '';
-                          
+                          const assetType = vault?.assetType || "";
+
                           // Filter vaults based on search query
                           if (!searchQuery) return true;
-                          
+
                           const query = searchQuery.toLowerCase();
                           return (
                             vaultName.toLowerCase().includes(query) ||
@@ -452,16 +483,16 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
                         })
                         .map((vaultId) => {
                           const vault = vaultInfo[vaultId];
-                          const apy = Number(
-                            apyData.data[formData.networkId][vaultId]
-                          ) * 100;
-                          
+                          const apy =
+                            Number(apyData.data[formData.networkId][vaultId]) *
+                            100;
+
                           return (
                             <div
                               key={vaultId}
                               className={`
                                 flex flex-col border rounded-md p-4 cursor-pointer hover:bg-muted transition-colors bg-muted
-                                ${formData.vaultId === vaultId ? 'border-primary' : 'border-border'}
+                                ${formData.vaultId === vaultId ? "border-primary" : "border-border"}
                               `}
                               onClick={() => handleVaultSelect(vaultId)}
                             >
@@ -479,77 +510,102 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
                                     )}
                                   </div>
                                   <div>
-                                    <h4 className="font-bold">{vault?.name || vaultId}</h4>
+                                    <h4 className="font-bold">
+                                      {vault?.name || vaultId}
+                                    </h4>
                                     <div className="flex items-center mt-1">
                                       <Card className="flex items-center p-2 py-1 bg-[#252733] rounded-sm w-auto inline-flex">
-                                      <div className="flex items-center">
-                                        <Image
-                                        src={networkInfo[formData.networkId]?.image}
-                                        alt={networkInfo[formData.networkId]?.name}
-                                        width={12}
-                                        height={12}
-                                        className="rounded-full mr-1"
-                                        />
-                                        <span className="text-xs whitespace-nowrap">{networkInfo[formData.networkId]?.name || formData.networkId}</span>
-                                      </div>
+                                        <div className="flex items-center">
+                                          <Image
+                                            src={
+                                              networkInfo[formData.networkId]
+                                                ?.image
+                                            }
+                                            alt={
+                                              networkInfo[formData.networkId]
+                                                ?.name
+                                            }
+                                            width={12}
+                                            height={12}
+                                            className="rounded-full mr-1"
+                                          />
+                                          <span className="text-xs whitespace-nowrap">
+                                            {networkInfo[formData.networkId]
+                                              ?.name || formData.networkId}
+                                          </span>
+                                        </div>
                                       </Card>
                                     </div>
                                   </div>
                                 </div>
                                 <div className="float-end text-right">
-                                  <p className="font-medium text-lg">{apy.toFixed(2)}%</p>
-                                  <p className="text-xs text-muted-foreground">APY</p>
+                                  <p className="font-medium text-lg">
+                                    {apy.toFixed(2)}%
+                                  </p>
+                                  <p className="text-xs text-muted-foreground">
+                                    APY
+                                  </p>
                                 </div>
                               </div>
                             </div>
                           );
                         })}
                   </div>
-                  
+
                   {/* No results message */}
                   {formData.networkId &&
                     apyData &&
-                    Object.keys(apyData.data[formData.networkId]).filter((vaultId) => {
-                      const vault = vaultInfo[vaultId];
-                      const vaultName = vault?.name || vaultId;
-                      const assetType = vault?.assetType || '';
-                      
-                      if (!searchQuery) return true;
-                      
-                      const query = searchQuery.toLowerCase();
-                      return (
-                        vaultName.toLowerCase().includes(query) ||
-                        assetType.toLowerCase().includes(query) ||
-                        vaultId.toLowerCase().includes(query)
-                      );
-                    }).length === 0 && (
+                    Object.keys(apyData.data[formData.networkId]).filter(
+                      (vaultId) => {
+                        const vault = vaultInfo[vaultId];
+                        const vaultName = vault?.name || vaultId;
+                        const assetType = vault?.assetType || "";
+
+                        if (!searchQuery) return true;
+
+                        const query = searchQuery.toLowerCase();
+                        return (
+                          vaultName.toLowerCase().includes(query) ||
+                          assetType.toLowerCase().includes(query) ||
+                          vaultId.toLowerCase().includes(query)
+                        );
+                      },
+                    ).length === 0 && (
                       <div className="text-center py-8 text-muted-foreground">
-                        No vaults found matching "{searchQuery}" {/*eslint-disable-line react/no-unescaped-entities*/}
+                        No vaults found matching "{searchQuery}"{" "}{/*eslint-disable-line react/no-unescaped-entities*/}
                       </div>
                     )}
                 </DialogContent>
               </Dialog>
             </div>
-            
+
             {/* Competitor toggle button */}
             {formData.vaultId && hasCompetitors && (
               <div className="grid gap-3">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   type="button"
                   onClick={toggleCompetitors}
                   className="flex items-center justify-center gap-2"
                 >
                   <BarChart2 className="h-4 w-4" />
-                  {showCompetitors ? "Hide Other Yield Sources" : "Compare Other Yield Sources"}
+                  {showCompetitors
+                    ? "Hide Other Yield Sources"
+                    : "Compare Other Yield Sources"}
                 </Button>
-                
+
                 {/* Competitor selection with improved styling */}
                 {showCompetitors && (
                   <div className="mt-2">
-                    <Label htmlFor="competitor" className="mb-2 block">Other Yield Sources</Label>
+                    <Label htmlFor="competitor" className="mb-2 block">
+                      Other Yield Sources
+                    </Label>
                     <Select
-                      value={selectedCompetitor === null ? "none" : selectedCompetitor}
+                      value={
+                        selectedCompetitor === null
+                          ? "none"
+                          : selectedCompetitor
+                      }
                       onValueChange={(value) => handleCompetitorSelect(value)}
                     >
                       {/* Custom styled trigger to match vault selection */}
@@ -577,7 +633,6 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
                         ) : (
                           <span>Select a comparison</span>
                         )}
-
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="none">
@@ -585,7 +640,7 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
                             <span>None</span>
                           </div>
                         </SelectItem>
-                        {availableCompetitors.map(competitorId => {
+                        {availableCompetitors.map((competitorId) => {
                           const competitor = competitorInfo[competitorId];
                           return (
                             <SelectItem key={competitorId} value={competitorId}>
@@ -599,11 +654,15 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
                                 />
                                 <span>{competitor.name}</span>
                                 <span className="ml-2 text-muted-foreground">
-                                  {loadingCompetitor && competitorAPY[competitorId] === undefined ? (
+                                  {loadingCompetitor &&
+                                  competitorAPY[competitorId] === undefined ? (
                                     <Loader2 className="h-4 w-4 inline ml-1 animate-spin" />
-                                  ) : competitorAPY[competitorId] !== undefined ? (
+                                  ) : competitorAPY[competitorId] !==
+                                    undefined ? (
                                     `${(competitorAPY[competitorId] * 100).toFixed(2)}%`
-                                  ) : "Loading..."}
+                                  ) : (
+                                    "Loading..."
+                                  )}
                                 </span>
                               </div>
                             </SelectItem>
@@ -658,7 +717,9 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
                   min="0"
                   step="0.01"
                   value={formData.monthlyContribution}
-                  onChange={(e) => handleNumberInputChange(e, "monthlyContribution")}
+                  onChange={(e) =>
+                    handleNumberInputChange(e, "monthlyContribution")
+                  }
                   className="w-full"
                 />
                 <span className="ml-2">
@@ -704,12 +765,14 @@ export default function InvestmentForm({ onCalculate }: InvestmentFormProps) {
                   variant="default"
                   className="w-full"
                   onClick={() => {
-                    const networkName = networkInfo[formData.networkId]?.name || formData.networkId;
+                    const networkName =
+                      networkInfo[formData.networkId]?.name ||
+                      formData.networkId;
                     let url = `https://app.goat.fi/vault/${networkName.toLowerCase()}/${formData.vaultId.toLowerCase()}`;
                     if (formData.vaultId === "stGOA") {
                       url = "https://app.goat.fi/stake";
                     }
-                    window.open(url, '_blank');
+                    window.open(url, "_blank");
                   }}
                 >
                   Open Vault on Goat.fi
