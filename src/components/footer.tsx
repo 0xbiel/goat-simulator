@@ -83,7 +83,8 @@ export default function Footer() {
           </div>
         </div>
         <Separator className="mx-1 border" />
-        <div className="flex items-center justify-center space-x-4">
+        <div className="flex items-center justify-between px-2">
+          <div className="flex items-center gap-2">
           <p className="text-gray-300">Made by @0xbiel</p>
           <Button
             variant="ghost"
@@ -92,6 +93,30 @@ export default function Footer() {
           >
             <Image src="/socials/x.svg" alt="Twitter" width={16} height={16} />
           </Button>
+          </div>
+          <div className={`flex items-center gap-2 ${direction == "horizontal" ? "" : "hidden"}`}>
+            <div onClick={() => window.open("https://defillama.com/protocol/goat-protocol", "_blank")} className="flex items-center gap-2 hover:underline cursor-pointer">
+              <Image
+                src="/socials/defillama.svg"
+                alt="DefiLlama"
+                width={14.3}
+                height={16}
+              />
+              <a className="text-sm">DefiLlama</a>
+            </div>
+            ·
+            <div onClick={() => window.open("https://dune.com/0xbiel/goat", "_blank")} className="flex items-center gap-2 hover:underline cursor-pointer">
+              <Image
+                src="/socials/dune.svg"
+                alt="Dune Analytics"
+                width={16}
+                height={16}
+              />
+              <a className="text-sm">Dune Analytics</a>
+            </div>
+          </div>
+          
+
         </div>
       </Card>
     </div>
