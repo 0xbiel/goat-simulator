@@ -74,6 +74,12 @@ export const vaultInfo: Record<string, VaultInfo> = {
     assetType: "GOA",
     isUSD: false,
   },
+  ycS: {
+    name: "wS Vault",
+    image: "/assets/sonic.svg",
+    assetType: "wS",
+    isUSD: false,
+  }
 };
 
 // Competitor metadata
@@ -355,16 +361,23 @@ export function formatCurrency(value: number, assetType?: string): string {
   if (assetType === "WETH" || assetType === "ETH") {
     return (
       new Intl.NumberFormat("en-US", {
-        minimumFractionDigits: 2,
+        minimumFractionDigits: 0,
         maximumFractionDigits: 4,
       }).format(value) + " ETH"
     );
   } else if (assetType === "GOA") {
     return (
       new Intl.NumberFormat("en-US", {
-        minimumFractionDigits: 2,
+        minimumFractionDigits: 0,
         maximumFractionDigits: 4,
       }).format(value) + " GOA"
+    );
+  } else if (assetType === "wS") {
+    return (
+      new Intl.NumberFormat("en-US", {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 4,
+      }).format(value) + " wS"
     );
   }
 
