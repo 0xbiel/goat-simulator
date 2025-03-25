@@ -105,7 +105,7 @@ export default function Footer() {
             </Button>
           </div>
           <div
-            className={`flex items-center gap-2 ${direction == "horizontal" ? "" : "hidden"}`}
+            className={`flex items-center gap-2`}
           >
             <div
               onClick={() =>
@@ -122,7 +122,7 @@ export default function Footer() {
                 width={14.3}
                 height={16}
               />
-              <a className="text-sm">DefiLlama</a>
+              <a className={`text-sm ${direction == "horizontal" ? "" : "hidden"}`}>DefiLlama</a>
             </div>
             ·
             <div
@@ -137,7 +137,7 @@ export default function Footer() {
                 width={16}
                 height={16}
               />
-              <a className="text-sm">Dune Analytics</a>
+              <a className={`text-sm ${direction == "horizontal" ? "" : "hidden"}`}>Dune Analytics</a>
             </div>
           </div>
         </div>
