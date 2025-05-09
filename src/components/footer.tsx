@@ -139,6 +139,13 @@ export default function Footer() {
               />
               <a className={`text-sm ${direction == "horizontal" ? "" : "hidden"}`}>Dune Analytics</a>
             </div>
+            <Button
+              variant="ghost"
+              className="p-2 h-auto text-gray-300"
+              onClick={() => window.open("https://biel.codes", "_blank")}
+            >
+              <Globe className="h-6 w-6" />
+            </Button>
           </div>
         </div>
       </Card>
